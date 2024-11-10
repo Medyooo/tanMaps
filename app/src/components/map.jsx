@@ -132,10 +132,10 @@ const MapComponent = () => {
             <Popup>
               {/*stop name*/}
               <strong>{stop.stop_name}</strong>
+               <br />
 
               {/*stop routes*/}
               <div>
-                <strong>Lignes desservies : </strong>
                 {
                   selectedRoutes.length > 0 ? (
                     <ul>
