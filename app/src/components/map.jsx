@@ -56,12 +56,13 @@ const MapComponent = () => {
   
       const filteredTrips = tripsData.map((trip) => ({
         trip_id: trip.trip_id,
-        route_id: trip.route_id
+        route_id: trip.route_id,
       }));
   
       const filteredRoutes = routesData.map((route) => ({
         route_id: route.route_id,
-        route_short_name: route.route_short_name
+        route_short_name: route.route_short_name,
+        route_color: route.route_color, 
       }));
   
       // Mettre à jour les états
@@ -87,7 +88,7 @@ const MapComponent = () => {
 
     const routeNames = [...new Set(routeIds.map(routeId => {
       const route = routes.find(route => route.route_id === routeId);
-      return route ? route.route_short_name : null;
+      return route ? { name: route.route_short_name, color: route.route_color } : null;
     }).filter(routeName => routeName !== null))];
 
     const uniqueRouteNames = [...new Set(routeNames)];
@@ -133,16 +134,36 @@ const MapComponent = () => {
               {/*stop name*/}
               <strong>{stop.stop_name}</strong>
                <br />
+               <br />
 
               {/*stop routes*/}
               <div>
                 {
                   selectedRoutes.length > 0 ? (
-                    <ul>
-                      {selectedRoutes.map((routeName, index) => (
-                        <li key={index}>{routeName}</li>
-                      ))}
-                    </ul>
+                    <ul
+                    style={{
+                      display: 'flex',        
+                      flexWrap: 'wrap',       
+                      gap: '10px',            
+                      padding: 0,             
+                    }}
+                    >
+                    {selectedRoutes.map((route, index) => (
+                      <li
+                        key={index}
+                        style={{
+                          backgroundColor: `#${route.color}`,
+                          color: 'white',
+                          padding: '5px',
+                          borderRadius: '5px',
+                          marginBottom: '5px',
+                          width: 'max-content',
+                        }}
+                      >
+                        {route.name}
+                      </li>
+                    ))}
+                  </ul>
                   ) : (
                     <p>Aucune ligne desservie.</p>
                   )
