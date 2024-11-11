@@ -5,7 +5,7 @@ import Papa from 'papaparse'
 import 'leaflet/dist/leaflet.css'
 
 // Stop Icon 
-const busIcon = new L.Icon({
+const stopIcon = new L.Icon({
   iconUrl: 'https://cdn2.iconfinder.com/data/icons/IconsLandVistaMapMarkersIconsDemo/256/MapMarker_Marker_Outside_Chartreuse.png',
   iconSize: [25, 25],
   iconAnchor: [12, 25],
@@ -63,6 +63,7 @@ const MapComponent = () => {
         route_id: route.route_id,
         route_short_name: route.route_short_name,
         route_color: route.route_color, 
+        route_type: route.route_type, 
       }));
   
       // Mettre à jour les états
@@ -88,7 +89,7 @@ const MapComponent = () => {
 
     const routeNames = [...new Set(routeIds.map(routeId => {
       const route = routes.find(route => route.route_id === routeId);
-      return route ? { name: route.route_short_name, color: route.route_color } : null;
+      return route ? { name: route.route_short_name, color: route.route_color, type: route.route_type } : null;
     }).filter(routeName => routeName !== null))];
 
     const uniqueRouteNames = [...new Set(routeNames)];
@@ -125,17 +126,15 @@ const MapComponent = () => {
           <Marker
             key={idx}
             position={[stop.latitude, stop.longitude]}
-            icon={busIcon}
+            icon={stopIcon}
             eventHandlers={{
               click: () => handleStopClick(stop.stop_id) 
             }}
           >
-            <Popup>
+              <Popup>
               {/*stop name*/}
               <strong>{stop.stop_name}</strong>
                <br />
-               <br />
-
               {/*stop routes*/}
               <div>
                 {
@@ -144,14 +143,17 @@ const MapComponent = () => {
                     style={{
                       display: 'flex',        
                       flexWrap: 'wrap',       
-                      gap: '10px',            
-                      padding: 0,             
+                      gap: '2px',            
+                      padding: 0,
+                      marging : 0,            
                     }}
                     >
                     {selectedRoutes.map((route, index) => (
                       <li
                         key={index}
                         style={{
+                          display: 'flex',           
+                          alignItems: 'center',      
                           backgroundColor: `#${route.color}`,
                           color: 'white',
                           padding: '5px',
@@ -161,6 +163,21 @@ const MapComponent = () => {
                         }}
                       >
                         {route.name}
+
+                        <img 
+                            src={
+                                route.type === '3' 
+                                    ? 'https://img.icons8.com/?size=100&id=241&format=png&color=ffffff' // Icône de bus
+                                    : route.type === '0' 
+                                    ? 'https://img.icons8.com/?size=100&id=248&format=png&color=ffffff' // Icône de tram
+                                    : null
+                            }
+                            style={{
+                              marginLeft: '5px',   
+                              height: '20px',      
+                              width: 'auto',       
+                            }}                        
+                          />
                       </li>
                     ))}
                   </ul>
